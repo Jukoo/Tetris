@@ -298,8 +298,8 @@ static void ttris_move_all_downward(int  rowy)
         
         line_above_value= *(line_above+cols) ;
       
-        //if (rowy==0) 
-          //line_above_value= *(current_matched_line+cols) = ~0; 
+        if (rowy==0) 
+          line_above_value= *(current_matched_line+cols) = ~0; 
         
         if (~0 !=  line_above_value) 
         {
@@ -313,7 +313,7 @@ static void ttris_move_all_downward(int  rowy)
       }
    }
   
-   tcmdexec(_reset) ; 
+   //tcmdexec(_reset) ; 
 }
 
 static int  ttris_figure_is_in_area(struct tformctl * restrict figure)   
@@ -348,7 +348,11 @@ static int  ttris_figure_is_in_area(struct tformctl * restrict figure)
 
          //!NOTE: OBJECT collision 
          if(*(line+figure->_shape+x) != ~0 ) 
+         {
+           ttris_dbg_prt(100 , 4 , "Ojbect collision detected");  
            return RCLS ; 
+             
+         }
          
        }
      } 
@@ -363,7 +367,6 @@ static void ttris_dectect_collision_between_object(struct  tformctl * restrict c
 {
    
 
-   ttris_dbg_prt(100 , 4 , "Ojbect collision detected");  
    current_form->_figure-=1; 
 
    ttris_draw_form(current_form ,&(struct area_location_xy){10, 0} ,0)  ;
