@@ -60,23 +60,43 @@ static  void ttris_init_virtual_area_surface(void)
 }
 
 
-static void  ttris_next_shape_visualizer_zone(struct area_location_xy * playground_zone ,  int height, int width) 
+static  struct  area_location_xy  *  ttris_next_shape_visualizer_zone(struct area_location_xy * playground_zone ,  int height, int width) 
 {
-  struct area_location_xy  visualizer_yx = { 
-    ._rowy =  5, //playground_zone->_rowy,
-    ._colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA/* Gap  between visualilze zone and playground zone*/)  
-  }; 
+  struct area_location_xy  *  visualizer_yx =  (struct area_location_xy  *)  malloc(sizeof(*visualizer_yx)); 
+  if(!visualizer_yx)
+    return  nptr ; 
+   
+    visualizer_yx->_rowy =playground_zone->_rowy+5 ;
+    visualizer_yx->_colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA/* Gap  between visualilze zone and playground zone*/);   
   
-  (void *)draw_area_zone_based(&visualizer_yx , height ,width) ; 
+  draw_area_zone_based(visualizer_yx , height ,width) ; 
+  return  visualizer_yx; 
 }
 
 
+static int  ttris_get_next_form(struct  tformctl  * restrict form , int id ) 
+{
+  return ttris_form_generator(form, id) ;
+}
+
+static void ttris_update_visualizer_area(int previous_form_id , int next_shape_id ,  struct  area_location_xy *  visualizer_area) 
+{
+  struct  tformctl next_forms[2] = {
+    {._form_type = previous_form_id , ._shape=4 },
+    {._form_type = next_shape_id    , ._shape=4 }
+  } ;  
+
+  //!TODO : clean the previous form
+  ttris_draw_form((next_forms),visualizer_area ,0,1); 
+  ttris_draw_form((next_forms+1) ,visualizer_area ,1 ,1); 
+  
+  tcmdexec(_reset) ; 
+}
 int ttris(void) 
 {
   if(clscr()) 
     warnx("Fail to clear the screen at first stage") ; 
 
-  ttris_dbg_prt(100,0 , "current process : %i\n",  (int)getpid()) ; 
  
   ttris_init_virtual_area_surface(); 
   ttris_touch_ctrl() ; 
@@ -92,12 +112,13 @@ int ttris(void)
      return ~0 ; 
   }
  
-  ttris_next_shape_visualizer_zone(playground_zone , 6,6) ; 
+  struct area_location_xy* visualizer_area = ttris_next_shape_visualizer_zone(playground_zone , 6,6) ; 
 
   struct tformctl  ttris_form ; 
-  struct tformctl  ttris_form_shadow;  
-  ttris_form_generator(&ttris_form) ;  
-
+  struct tformctl  ttris_form_shadow; 
+  int  previous_form_id  =  0 ; 
+  int next_form_id = ttris_form_generator(&ttris_form ,  previous_form_id=give_ttris_form) ;  
+  ttris_update_visualizer_area(previous_form_id, next_form_id , visualizer_area) ; 
   int  reach_bottom =0 ; 
   while(1) 
   {
@@ -105,12 +126,14 @@ int ttris(void)
      if(reach_bottom & RBTM)  
      {
        ttris_record_form(&ttris_form) ; 
-       ttris_form_generator(&ttris_form); 
+       next_form_id = ttris_get_next_form(&ttris_form,previous_form_id = next_form_id) ;
+       ttris_update_visualizer_area(previous_form_id , next_form_id , visualizer_area) ; 
+
        reach_bottom&=~RBTM; 
      }
     
 
-     ttris_draw_form(&ttris_form,playground_zone,1) ; 
+     ttris_draw_form(&ttris_form,playground_zone,1,0) ; 
      ttris_form_shadow = ttris_form; 
      //!listen to keyboard direction control event  
      int input_evt   =  ttris_listen_touch_ctrl(&ttris_form); 
@@ -120,7 +143,7 @@ int ttris(void)
      {
        //!draw  shadow in current position of the form 
        //!and move down forward  and draw the form  with color  
-       ttris_draw_form(&ttris_form,playground_zone,0) ;
+       ttris_draw_form(&ttris_form,playground_zone,0,0) ;
        ttris_form._figure++; 
         //!TODO : Should be removed or  Found new ways  to ignore the other  key control  
        // if(BAD_KEY  !=  (POLL_EVT_TIMEOUT >>4)  & 0xf)
@@ -134,7 +157,7 @@ int ttris(void)
        }
      
 
-       ttris_draw_form(&ttris_form,playground_zone,1) ;  
+       ttris_draw_form(&ttris_form,playground_zone,1,0) ;  
        continue;  
      } 
 
@@ -150,15 +173,15 @@ int ttris(void)
          continue ; 
        }
 
-       ttris_draw_form(&ttris_form,playground_zone,0)  ; 
+       ttris_draw_form(&ttris_form,playground_zone,0,0)  ; 
 
        if ( (ttris_form._shape != ttris_form_shadow._shape) || 
             (ttris_form._figure!= ttris_form_shadow._figure)||
             (ttris_form._orientation!= ttris_form_shadow._orientation)) 
      {
-       ttris_draw_form(&ttris_form_shadow,playground_zone,0) ; 
+       ttris_draw_form(&ttris_form_shadow,playground_zone,0,0) ; 
        ttris_form_shadow =  ttris_form; 
-       ttris_draw_form(&ttris_form,playground_zone,1) ; 
+       ttris_draw_form(&ttris_form,playground_zone,1,0) ; 
      }
 
        nanosleep( &(struct  timespec){0,1000},  nptr) ; 
@@ -382,8 +405,8 @@ static void ttris_dectect_collision_between_object(struct  tformctl * restrict c
 
    current_form->_figure-=1; 
 
-   ttris_draw_form(current_form ,&(struct area_location_xy){10, 0} ,0)  ;
-   ttris_draw_form(prevs_form, &(struct area_location_xy){10, 0} ,1)  ; 
+   ttris_draw_form(current_form ,&(struct area_location_xy){10, 0} ,0,0)  ;
+   ttris_draw_form(prevs_form, &(struct area_location_xy){10, 0} ,1,0)  ; 
 
    prevs_form  = current_form ; 
     

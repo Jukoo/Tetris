@@ -23,21 +23,21 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
 
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		}
@@ -46,28 +46,28 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
 	{ /*|*/
 		{
 			{0, 0, 0, 0},
-			{1, 1, 2, 1},
+			{1, 1, 1, 1},
 			{0, 0, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 0, 1, 0},
 			{0, 0, 1, 0}
 		},
 
 		{
 			{0, 0, 0, 0},
-			{1, 1, 2, 1},
+			{1, 1, 1, 1},
 			{0, 0, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 0, 1, 0},
 			{0, 0, 1, 0}
 		}
@@ -79,28 +79,28 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
            ___ */
 		{
 			{0, 0, 0, 0},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 0, 0, 1},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 0},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 0, 0, 1},
 			{0, 0, 0, 0}
 		}
@@ -111,28 +111,28 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
          --  */
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 0, 1, 1},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 1},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 0, 1, 1},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 1},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		}
@@ -141,28 +141,28 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
 	{ /*|_ */
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 1},
+			{0, 1, 1, 1},
 			{0, 1, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 0, 1, 1},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 0, 1},
-			{0, 1, 2, 1},
+			{0, 1, 1, 1},
 			{0, 0, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 1, 1, 0},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		}
@@ -172,28 +172,28 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
          _| */
 		{
 			{0, 0, 0, 0},
-			{0, 1, 2, 1},
+			{0, 1, 1, 1},
 			{0, 0, 0, 1},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 1},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 1, 0, 0},
-			{0, 1, 2, 1},
+			{0, 1, 1, 1},
 			{0, 0, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 0},
+			{0, 0, 1, 0},
 			{0, 1, 1, 0},
 			{0, 0, 0, 0}
 		}
@@ -210,21 +210,21 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
 
 		{
 			{0, 0, 1, 0},
-			{0, 0, 2, 1},
+			{0, 0, 1, 1},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 1, 2, 1},
+			{0, 1, 1, 1},
 			{0, 0, 0, 0},
 			{0, 0, 0, 0}
 		},
 
 		{
 			{0, 0, 1, 0},
-			{0, 1, 2, 0},
+			{0, 1, 1, 0},
 			{0, 0, 1, 0},
 			{0, 0, 0, 0}
 		}
@@ -232,19 +232,20 @@ int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]={
 };
 
 
-struct tformctl * ttris_form_generator(struct tformctl * restrict figure) 
+int   ttris_form_generator(struct tformctl * restrict figure , int id ) 
 { 
-  figure->_form_type = give_ttris_form; 
+  figure->_form_type = id;    
   figure->_orientation= give_ttris_orientation; 
   figure->_figure=0 ;  //!row  
-  figure->_shape=4;   //!cols  
+  figure->_shape=4;   //!cols   
+                      
 
-  return figure ; 
+  return   give_ttris_form  ;  
 }
 
 
 void ttris_draw_form(struct  tformctl * restrict tform, struct area_location_xy *  location_playground,
-    int should_apply_color)
+    int should_apply_color, int gap_consideration)
 {
 
     if(0  == should_apply_color ) 
@@ -266,10 +267,10 @@ void ttris_draw_form(struct  tformctl * restrict tform, struct area_location_xy 
            if(ttris_forms[tform->_form_type][tform->_orientation][rows][cols]!=0) 
            {
              tcmdexec_g(_cursors[cr_address],
-                (location_playground->_colx +1) +           /* start at col 1 */ 
+                ((location_playground->_colx -(gap_consideration!=0 ?  7 : 0 ) + 1))   +           /* start at col 1 */ 
                 (tform->_shape <<1) +                      /* doubling the shape size  */
                  (cols << 1)                                /* and column to corolate the shape fit */
-                 ,tform->_figure+1+rows) ;                  //! rows or lines 
+                 ,tform->_figure+1+rows+(gap_consideration !=0 ? location_playground->_rowy:0)) ;                  //! rows or lines 
 
              ascii_prt(0x20) ; 
              

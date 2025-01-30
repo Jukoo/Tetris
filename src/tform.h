@@ -22,9 +22,20 @@ struct tformctl
   int _form_type;  
   int _orientation; 
   int _figure; 
-  int _shape;    
+  int _shape;   
 }; 
 
+/*  
+typedef struct  tformctl_queue tformctl_queue ; 
+struct tformctl_queue {
+   struct  tformctl* _current_form ; 
+   struct  tformctl* _next_form
+}; 
+*/
+#define  CURRENT 0 
+#define  NEXT    1 
+extern struct tformctl forms[2] ; 
+ 
 
 extern int ttris_forms[NFORM][NROTS][FSIZE][SSIZE]; 
 
@@ -33,7 +44,7 @@ extern int ttris_forms[NFORM][NROTS][FSIZE][SSIZE];
  * @param struct  tformctl 
  * @return tformctl* - hold  the information about the form  
  */
-struct   tformctl *ttris_form_generator(struct  tformctl * __restrict__ tform);  
+int ttris_form_generator(struct  tformctl * __restrict__ tform , int form_id);  
 
 __extern_always_inline  
 int  __give_ttris_form_id(int fid)  
@@ -51,7 +62,7 @@ int  __give_ttris_form_id(int fid)
 /* @fn ttris_draw_form()
  */ 
 void  ttris_draw_form(struct  tformctl * __restrict__ tform ,  
-                      struct  area_location_xy * __restrict__  plgnd_zone ,  int color); 
+                      struct  area_location_xy * __restrict__  plgnd_zone ,  int color ,  int  gap_consideration); 
 
 
 

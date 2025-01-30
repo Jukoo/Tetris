@@ -70,13 +70,21 @@ static void ttris_touch_ctrl(void) ;
  * @brief  draw a small  area  to visualize  incomming form  
  * @parm  struct area_location_xy *  
  */
-static void ttris_next_shape_visualizer_zone(struct area_location_xy * main_playground_zone ,  int height ,int width); 
+static struct area_location_xy * ttris_next_shape_visualizer_zone(struct area_location_xy * main_playground_zone,
+                                                int height ,int width); 
 
+/* @fn 
+ *
+ * */ 
 
+static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id  ) ; 
 /* @fn ttris(void)  *  entry of the game 
  * @brief handle  the game main function of the game 
  * @return int 0:ok otherwise error 
  */
+
+
+static void  ttris_update_visualizer_area(int previous_shape_id , int next_shape_id ,  struct  area_location_xy *  visualizer_zone) ;  
 
 int ttris(void) ;  
 
