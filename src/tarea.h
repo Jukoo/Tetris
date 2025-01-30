@@ -14,13 +14,13 @@
   write(STDOUT_FILENO, (char[2]){__ascii_code_symbole & 0xff},2)
 
 
+
 typedef struct  area_location_xy area_location_xy ; 
 struct  area_location_xy { 
   int   _colx; 
   int   _rowy; 
   int   _area_playground[TEREA_HEIGHT][TEREA_WIDTH] ; 
 }; 
-
 
 extern int area_surface[TEREA_HEIGHT][TEREA_WIDTH] ; 
 
@@ -32,8 +32,9 @@ extern int area_surface[TEREA_HEIGHT][TEREA_WIDTH] ;
  * @return int status code 
  */
 
-struct area_location_xy * draw_area_zone(int  start_colx , int start_rowy) ;   
-
+struct area_location_xy * draw_area_zone(int  start_colx , int start_rowy ,  int height , int width) ; 
+struct area_location_xy * draw_area_zone_based(struct area_location_xy *  __restrict__   playground,
+                                               int height , int width);
 
 /* @fn term_xymax(void)
  * @brief get  maximum cols and rows supported 

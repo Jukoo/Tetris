@@ -60,6 +60,17 @@ static  void ttris_init_virtual_area_surface(void)
 }
 
 
+static void  ttris_next_shape_visualizer_zone(struct area_location_xy * playground_zone ,  int height, int width) 
+{
+  struct area_location_xy  visualizer_yx = { 
+    ._rowy =  5, //playground_zone->_rowy,
+    ._colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA/* Gap  between visualilze zone and playground zone*/)  
+  }; 
+  
+  (void *)draw_area_zone_based(&visualizer_yx , height ,width) ; 
+}
+
+
 int ttris(void) 
 {
   if(clscr()) 
@@ -73,14 +84,16 @@ int ttris(void)
 
   struct area_location_xy * playground_zone = nptr; 
   //!TODO :  move area coordonate across files 
-  playground_zone =  draw_area_zone(10,0) ; 
+  playground_zone =  draw_area_zone(10,0,TEREA_HEIGHT, TEREA_WIDTH) ; 
   
   if (!playground_zone) 
   {
      warnx("Cannot draw in area zone that overflow the current term") ; 
      return ~0 ; 
   }
-   
+ 
+  ttris_next_shape_visualizer_zone(playground_zone , 6,6) ; 
+
   struct tformctl  ttris_form ; 
   struct tformctl  ttris_form_shadow;  
   ttris_form_generator(&ttris_form) ;  

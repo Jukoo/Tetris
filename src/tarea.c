@@ -10,7 +10,7 @@
 
 int  area_surface[TEREA_HEIGHT][TEREA_WIDTH]={0} ; 
 
-struct area_location_xy * draw_area_zone(int start_colx , int start_rowy) 
+struct area_location_xy * draw_area_zone(int start_colx , int start_rowy , int height , int width) 
 { 
   /*! make sure if  the given cols and rows fit  well*/ 
   int dim =  term_xymax() ; 
@@ -29,36 +29,42 @@ struct area_location_xy * draw_area_zone(int start_colx , int start_rowy)
   ttris_playground_zone->_colx = start_colx ; 
   ttris_playground_zone->_rowy = start_rowy ;  
 
-  tcmdexec_g(_cursors[cr_address] ,start_colx,start_rowy) ; 
   
+  tcmdexec_g(_cursors[cr_address] ,start_colx,start_rowy) ;
   int y=~0;
   int upline =1 ; 
-  while(++y  <TEREA_HEIGHT)
+  while(++y  < height)
   {
-    if (0 == y ||  y == (TEREA_HEIGHT -1))  
+    if (0 == y ||  y == (height -1))  
     {  
       if(!upline) 
-        tcmdexec_g(_cursors[cr_address],start_colx,y) ;  
+        tcmdexec_g(_cursors[cr_address],start_colx,y+start_rowy) ;  
 
       int x=~0; 
       ascii_prt(0x2b); 
-      while ( ++x   < (TEREA_WIDTH<<1))  
+      while ( ++x   < (width<<1))  
         ascii_prt(0x2d);  
       
       ascii_prt(0x2b); 
       upline^=upline; 
     }else 
     { 
-      tcmdexec_g(_cursors[cr_address] ,start_colx,y); 
+      tcmdexec_g(_cursors[cr_address] ,start_colx,y+start_rowy); 
       ascii_prt(0x7c);  
-      tcmdexec_g(_cursors[cr_address] ,((TEREA_WIDTH<<1)+1)+start_colx,y); 
+      tcmdexec_g(_cursors[cr_address] ,((width<<1)+1)+start_colx,y+start_rowy); 
       ascii_prt(0x7c);  
     }
 
   }
-
+  tcmdexec(_reset) ; 
   return ttris_playground_zone ;  
 } 
+
+struct area_location_xy * draw_area_zone_based(struct  area_location_xy * restrict  plgrd , int height , int width)  
+{
+  return draw_area_zone(plgrd->_colx , plgrd->_rowy,  height , width) ; 
+}
+
 
 static int term_xymax(void)
 {  

@@ -45,6 +45,7 @@ extern int kbrctl_mode;
 #define POOL_EVT_JIT      1   /*! Key pressed just in time */  
 #define BAD_KEY  (1<<5)
 
+#define PREVISUALIZER_AREA   10 
 
 /* @fn clscr(void) 
  * @brief clear the screen first 
@@ -65,10 +66,18 @@ static void ttris_init_virtual_area_surface(void);
 
 static void ttris_touch_ctrl(void) ; 
 
+/* @fn  ttris_next_shape_visualizer_zone(struct  area_location_xy  *) 
+ * @brief  draw a small  area  to visualize  incomming form  
+ * @parm  struct area_location_xy *  
+ */
+static void ttris_next_shape_visualizer_zone(struct area_location_xy * main_playground_zone ,  int height ,int width); 
+
+
 /* @fn ttris(void)  *  entry of the game 
  * @brief handle  the game main function of the game 
  * @return int 0:ok otherwise error 
  */
+
 int ttris(void) ;  
 
 
@@ -90,7 +99,6 @@ static void  ttris_record_form (struct tformctl * __restrict__ figure) ;
  *  @fn  ttris_is_rows_line_completed() 
  *  @brief check in the matrix aka area matrix 
  *         thats represent the area  of playground game 
- *
  * */ 
 static void ttris_check_rows_line_completed(void) ; 
 
@@ -109,7 +117,9 @@ static void ttris_move_all_downward(int  line_or_row_location ) ;
 
 static int ttris_figure_is_in_area(struct  tformctl *__restrict__ figure) ; 
 
-
+/* @fn  ttris_dectect_collision_between_object(struct  tformctl * ,  struct  tformctl *) ; 
+ * @brief detecting collision between  object   
+ */ 
 static void ttris_dectect_collision_between_object(struct  tformctl* __restrict__ current_figure , 
                                                    struct  tformctl* __restrict__ prevs_figure) ; 
 /* @fn  ttris_dbg_prt(int , int  , const char * , ... )  
