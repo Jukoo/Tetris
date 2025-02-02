@@ -244,42 +244,43 @@ int   ttris_form_generator(struct tformctl * restrict figure , int id )
 }
 
 
-struct  tformctl_queue  * ttris_form_init(struct tformctl * restrict tfctl)    
+struct  tformctl_queue  * ttris_form_init(void)    
 {
   struct tformctl_queue *  tfQ = (struct tformctl_queue*) malloc(sizeof(*tfQ)); 
   if(!tfQ)  
     return nptr; 
-
+  
   int next_shape_id =  ttris_form_generator(&tfQ->_current_form , give_ttris_form); 
-
-  *tfctl = tfQ->_current_form ;   
+  tfQ->_formctl_idsmask = ((tfQ->_current_form._form_type << SSIZE) | (next_shape_id & 0xf)) ;  
   (void) ttris_form_generator(&tfQ->_next_form ,  next_shape_id) ; 
-
-  tfQ->_formctl_idsmask =  ttris_form_get_next(tfQ  , tfctl) ; 
 
   return tfQ ; 
   
 }
 
-int ttris_form_get_next(struct  tformctl_queue * restrict tfQ ,  struct tformctl * restrict  tfctl)  
+int ttris_form_get_next(struct  tformctl_queue * restrict tfQ)  
 {
-  //!  dump the current form  on tfctl 
-  *tfctl = tfQ->_current_form  ;  
-  //!  move TfQ current form pointing to next  ; 
+  /*! reset idmask form  to initial state */ 
+  tfQ->_formctl_idsmask&=~tfQ->_formctl_idsmask ;  
+
+  /*! get previous form type id */   
+  int previous =  tfQ->_current_form._form_type;  
+  /*! set the current form  to reach the next form   */
   tfQ->_current_form =  tfQ->_next_form; 
   
   /*!  Generate new shape/form  for  tfQ->next_form attribute */
-  (void)ttris_form_generator(&tfQ->_next_form,  give_ttris_form);
- 
-  //! reset idmask form  to initial state 
-  tfQ->_formctl_idsmask&=~tfQ->_formctl_idsmask ;  //reset ;
+  (void)ttris_form_generator(&tfQ->_next_form,  give_ttris_form);  
 
-  //!reconstitute the  idmask  
-  tfQ->_formctl_idsmask = ((tfctl->_form_type << SSIZE) | tfQ->_current_form._form_type &0xf )  ;   
+  /*! Get  next form type id  */ 
+  int next  =  tfQ->_next_form._form_type;  
+  
+  /*! reconstitute the  idmask */  
+  tfQ->_formctl_idsmask |=((previous << SSIZE) | next & 0xf ); 
+
   return tfQ->_formctl_idsmask ; 
 }
 
-void ttris_draw_form(struct  tformctl * restrict tform, struct area_location_xy *  location_playground,
+void ttris_draw_form(struct  tformctl * tform, struct area_location_xy *  location_playground,
     int should_apply_color, int gap_consideration)
 {
 
@@ -288,7 +289,7 @@ void ttris_draw_form(struct  tformctl * restrict tform, struct area_location_xy 
       //!TODO  : add flag for form shadow 
       tcmdexec(_reset) ; 
     }else 
-      tcmdexec_p(_bcolor, COLOR_WHITE+tform->_form_type);  
+      tcmdexec_p(_bcolor, COLOR_WHITE+ tform->_form_type);  
 
 	int rows=~0; 
     int fill_the_gap =0 ;    

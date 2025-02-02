@@ -31,7 +31,7 @@ typedef struct  tformctl_queue tformctl_queue ;
 struct tformctl_queue {
    struct  tformctl _current_form;    
    struct  tformctl _next_form;  
-   unsigned  _formctl_idsmask:8 ; /*! Hold  the previous id shape and next id shape but compacted in 8bit signature */
+   int _formctl_idsmask ; /*! Hold  the previous id shape and next id shape but compacted in 8bit signature */
 }; 
 
 #define  CURRENT 0 
@@ -67,7 +67,7 @@ int  __give_ttris_form_id(int fid)
  * @brief initialize  form or shape generation 
  * @parm struct tformctl_queue * 
  */
-extern  struct tformctl_queue * ttris_form_init(struct tformctl * __restrict__ ftctl) ;  
+extern  struct tformctl_queue * ttris_form_init(void) ;  
 
 /* @fn ttris_form_get_next(struct tformctl_queue * , struct tformctl*)
  * @brief give  the next generated form  
@@ -76,11 +76,11 @@ extern  struct tformctl_queue * ttris_form_init(struct tformctl * __restrict__ f
  * @return int                     - form ids mask  8bits format MSB previous id form  LSB  next id form 
  */
 
-extern  int  ttris_form_get_next(struct tformctl_queue * __restrict__  tfQ , struct tformctl *  __restrict__ tfctl) ; 
+extern  int  ttris_form_get_next(struct tformctl_queue * __restrict__  tfQ) ; 
 
 /* @fn ttris_draw_form()
  */ 
-void  ttris_draw_form(struct  tformctl * __restrict__ tform ,  
+void  ttris_draw_form(struct  tformctl * tform ,  
                       struct  area_location_xy * __restrict__  plgnd_zone ,  int color ,  int  gap_consideration); 
 
 
