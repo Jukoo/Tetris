@@ -79,12 +79,15 @@ static int  ttris_get_next_form(struct  tformctl  * restrict form , int id )
   return ttris_form_generator(form, id) ;
 }
 
-static void ttris_update_visualizer_area(int previous_form_id , int next_shape_id ,  struct  area_location_xy *  visualizer_area) 
-{
+static void ttris_update_visualizer_area(int ids_mask , struct  area_location_xy *  visualizer_area) 
+{ 
+   
   struct  tformctl next_forms[2] = {
-    {._form_type = previous_form_id , ._shape=4 },
-    {._form_type = next_shape_id    , ._shape=4 }
+    {._form_type = (ids_mask>>SSIZE), ._shape=SSIZE },
+    {._form_type = (ids_mask & 0x0f), ._shape=SSIZE }
   } ;  
+
+  ttris_dbg_prt(100, 10 , "");
 
   //!TODO : clean the previous form
   ttris_draw_form((next_forms),visualizer_area ,0,1); 
@@ -92,6 +95,8 @@ static void ttris_update_visualizer_area(int previous_form_id , int next_shape_i
   
   tcmdexec(_reset) ; 
 }
+
+
 int ttris(void) 
 {
   if(clscr()) 
@@ -116,9 +121,16 @@ int ttris(void)
 
   struct tformctl  ttris_form ; 
   struct tformctl  ttris_form_shadow; 
-  int  previous_form_id  =  0 ; 
-  int next_form_id = ttris_form_generator(&ttris_form ,  previous_form_id=give_ttris_form) ;  
-  ttris_update_visualizer_area(previous_form_id, next_form_id , visualizer_area) ; 
+  
+  struct tformctl_queue *  ttris_shapes  = ttris_form_init() ; 
+  if (!ttris_shapes) 
+    return   ~0 ;  
+  
+ // int next_form_id = ttris_form_generator(&ttris_form ,  previous_form_id=give_ttris_form) ;  
+
+  int  ids = ttris_form_get_next(ttris_shapes , &ttris_form) ;   
+  ttris_update_visualizer_area(ttris_shapes->_formctl_idsmask  , visualizer_area) ; 
+
   int  reach_bottom =0 ; 
   while(1) 
   {
@@ -126,9 +138,8 @@ int ttris(void)
      if(reach_bottom & RBTM)  
      {
        ttris_record_form(&ttris_form) ; 
-       next_form_id = ttris_get_next_form(&ttris_form,previous_form_id = next_form_id) ;
-       ttris_update_visualizer_area(previous_form_id , next_form_id , visualizer_area) ; 
-
+       ids = ttris_form_get_next(ttris_shapes , &ttris_form) ;   
+       ttris_update_visualizer_area(ids, visualizer_area) ; 
        reach_bottom&=~RBTM; 
      }
     

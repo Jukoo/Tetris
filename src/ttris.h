@@ -84,7 +84,7 @@ static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id
  */
 
 
-static void  ttris_update_visualizer_area(int previous_shape_id , int next_shape_id ,  struct  area_location_xy *  visualizer_zone) ;  
+static void  ttris_update_visualizer_area(int ids_mask , struct  area_location_xy *  visualizer_zone) ;  
 
 int ttris(void) ;  
 
