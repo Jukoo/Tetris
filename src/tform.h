@@ -52,7 +52,7 @@ int ttris_form_generator(struct  tformctl * __restrict__ tform , int form_id);
 __extern_always_inline  
 int  __give_ttris_form_id(int fid)  
 {
-   srand(time(0)) ; 
+   srand(time(0)) ;  
    return  rand() %  fid ; 
 }
 
@@ -67,7 +67,7 @@ int  __give_ttris_form_id(int fid)
  * @brief initialize  form or shape generation 
  * @parm struct tformctl_queue * 
  */
-extern  struct tformctl_queue * ttris_form_init(void) ;  
+extern  struct tformctl_queue * ttris_form_init(struct tformctl * __restrict__ ftctl) ;  
 
 /* @fn ttris_form_get_next(struct tformctl_queue * , struct tformctl*)
  * @brief give  the next generated form  

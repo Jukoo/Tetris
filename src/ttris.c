@@ -122,14 +122,14 @@ int ttris(void)
   struct tformctl  ttris_form ; 
   struct tformctl  ttris_form_shadow; 
   
-  struct tformctl_queue *  ttris_shapes  = ttris_form_init() ; 
+  struct tformctl_queue *  ttris_shapes  = ttris_form_init(&ttris_form) ; 
   if (!ttris_shapes) 
     return   ~0 ;  
   
  // int next_form_id = ttris_form_generator(&ttris_form ,  previous_form_id=give_ttris_form) ;  
 
-  int  ids = ttris_form_get_next(ttris_shapes , &ttris_form) ;   
-  ttris_update_visualizer_area(ttris_shapes->_formctl_idsmask  , visualizer_area) ; 
+  int  ids = ttris_shapes->_formctl_idsmask  ; 
+  ttris_update_visualizer_area(ids , visualizer_area) ; 
 
   int  reach_bottom =0 ; 
   while(1) 

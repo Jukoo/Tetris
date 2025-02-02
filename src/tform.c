@@ -236,7 +236,7 @@ int   ttris_form_generator(struct tformctl * restrict figure , int id )
 { 
   figure->_form_type = id;    
   figure->_orientation= give_ttris_orientation; 
-  figure->_figure=0 ;  //!row  
+  figure->_figure=0 ;     //!row  
   figure->_shape=SSIZE;   //!cols   
                       
 
@@ -244,17 +244,18 @@ int   ttris_form_generator(struct tformctl * restrict figure , int id )
 }
 
 
-struct  tformctl_queue  * ttris_form_init(void)  
+struct  tformctl_queue  * ttris_form_init(struct tformctl * restrict tfctl)    
 {
   struct tformctl_queue *  tfQ = (struct tformctl_queue*) malloc(sizeof(*tfQ)); 
   if(!tfQ)  
     return nptr; 
 
-  int next_shape_id =  ttris_form_generator(&tfQ->_current_form , give_ttris_form) ; 
-  
+  int next_shape_id =  ttris_form_generator(&tfQ->_current_form , give_ttris_form); 
+
+  *tfctl = tfQ->_current_form ;   
   (void) ttris_form_generator(&tfQ->_next_form ,  next_shape_id) ; 
 
-  tfQ->_formctl_idsmask = (tfQ->_current_form._form_type<<SSIZE) |(next_shape_id & 0xf)  ; 
+  tfQ->_formctl_idsmask =  ttris_form_get_next(tfQ  , tfctl) ; 
 
   return tfQ ; 
   
@@ -262,15 +263,18 @@ struct  tformctl_queue  * ttris_form_init(void)
 
 int ttris_form_get_next(struct  tformctl_queue * restrict tfQ ,  struct tformctl * restrict  tfctl)  
 {
-  *tfctl = tfQ->_current_form  ; 
-  tfctl->_form_type ;  
- 
-  tfQ->_current_form =  tfQ->_next_form;    
-  /*!  Generate new shape/form  for  next_form attribute */
+  //!  dump the current form  on tfctl 
+  *tfctl = tfQ->_current_form  ;  
+  //!  move TfQ current form pointing to next  ; 
+  tfQ->_current_form =  tfQ->_next_form; 
+  
+  /*!  Generate new shape/form  for  tfQ->next_form attribute */
   (void)ttris_form_generator(&tfQ->_next_form,  give_ttris_form);
  
+  //! reset idmask form  to initial state 
   tfQ->_formctl_idsmask&=~tfQ->_formctl_idsmask ;  //reset ;
 
+  //!reconstitute the  idmask  
   tfQ->_formctl_idsmask = ((tfctl->_form_type << SSIZE) | tfQ->_current_form._form_type &0xf )  ;   
   return tfQ->_formctl_idsmask ; 
 }
