@@ -96,7 +96,7 @@ static void ttris_update_visualizer_area(int ids_mask , struct  area_location_xy
 }
 
 
-int ttris(void) 
+int ttris(int ttris_coordx , int ttris_coordy) 
 {
   if(clscr()) 
     warnx("Fail to clear the screen at first stage") ; 
@@ -107,7 +107,7 @@ int ttris(void)
   
 
   struct area_location_xy * playground_zone = nptr; 
-  //!TODO :  move area coordonate across files 
+  //!TODO :  move area coordonate across files  
   playground_zone =  draw_area_zone(10,0,TEREA_HEIGHT, TEREA_WIDTH) ; 
   
   if (!playground_zone) 

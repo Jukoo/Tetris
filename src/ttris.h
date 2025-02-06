@@ -78,15 +78,16 @@ static struct area_location_xy * ttris_next_shape_visualizer_zone(struct area_lo
  * */ 
 
 static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id  ) ; 
-/* @fn ttris(void)  *  entry of the game 
- * @brief handle  the game main function of the game 
- * @return int 0:ok otherwise error 
- */
+
 
 
 static void  ttris_update_visualizer_area(int ids_mask , struct  area_location_xy *  visualizer_zone) ;  
 
-int ttris(void) ;  
+/* @fn ttris(void)  *  entry of the game 
+ * @brief handle  the game main function of the game 
+ * @return int 0:ok otherwise error 
+ */
+int ttris(int ttris_coordx , int ttris_coordy) ;  
 
 
 /* @fn ttris_listen_touch_ctrl(void) 
