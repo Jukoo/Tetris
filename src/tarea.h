@@ -10,17 +10,30 @@
 #define  TEREA_HEIGHT (TEREA_WIDTH << 1) 
 #define  TEREA_SURFACE_DEFVAL  ~0 
 
+
+//#TODO : move this to  termconfigure.h
 #define  ascii_prt(__ascii_code_symbole)  \
   write(STDOUT_FILENO, (char[2]){__ascii_code_symbole & 0xff},2)
 
+#define LINK_PREV_AREA_2_PGND_AREA   1
+#define GAP_BETWEEN_PGND_AREA_n_PREV_AREA  10 
 
+typedef struct  preview_area     preview_area ; 
+struct  preview_area 
+{
+   int _colx ; 
+   int _rowy ; 
+} ; 
 
-typedef struct  area_location_xy area_location_xy ; 
-struct  area_location_xy { 
+typedef struct  playground_area  playground_area;  
+struct  playground_area { 
   int   _colx; 
-  int   _rowy; 
-  int   _area_playground[TEREA_HEIGHT][TEREA_WIDTH] ; 
-}; 
+  int   _rowy;
+#if LINK_PREV_AREA_2_PGND_AREA
+  struct preview_area  _preview_area ; 
+#endif 
+};
+
 
 extern int area_surface[TEREA_HEIGHT][TEREA_WIDTH] ; 
 
@@ -32,8 +45,8 @@ extern int area_surface[TEREA_HEIGHT][TEREA_WIDTH] ;
  * @return int status code 
  */
 
-struct area_location_xy * draw_area_zone(int  start_colx , int start_rowy ,  int height , int width) ; 
-struct area_location_xy * draw_area_zone_based(struct area_location_xy *  __restrict__   playground,
+void draw_area_zone(int  start_colx , int start_rowy ,  int height , int width) ; 
+void draw_area_zone_based(struct playground_area *  __restrict__   playground,
                                                int height , int width);
 
 /* @fn term_xymax(void)

@@ -236,8 +236,8 @@ int   ttris_form_generator(struct tformctl * restrict figure , int id )
 { 
   figure->_form_type = id;    
   figure->_orientation= give_ttris_orientation; 
-  figure->_figure=0 ;     //!row  
-  figure->_shape=SSIZE;   //!cols   
+  figure->_figure=0 ;      
+  figure->_shape=SSIZE;    
                       
 
   return   give_ttris_form  ;  
@@ -280,7 +280,7 @@ int ttris_form_get_next(struct  tformctl_queue * restrict tfQ)
   return tfQ->_formctl_idsmask ; 
 }
 
-void ttris_draw_form(struct  tformctl * tform, struct area_location_xy *  location_playground,
+void ttris_draw_form(struct  tformctl * tform, struct  playground_area *  location_playground,
     int should_apply_color, int gap_consideration)
 {
 
@@ -306,7 +306,8 @@ void ttris_draw_form(struct  tformctl * tform, struct area_location_xy *  locati
                 ((location_playground->_colx -(gap_consideration!=0 ?  7 : 0 ) + 1))   +           /* start at col 1 */ 
                 (tform->_shape <<1) +                      /* doubling the shape size  */
                  (cols << 1)                                /* and column to corolate the shape fit */
-                 ,tform->_figure+1+rows+(gap_consideration !=0 ? location_playground->_rowy:0)) ;                  //! rows or lines 
+
+                 ,tform->_figure+1+location_playground->_rowy+rows+(gap_consideration !=0 ? location_playground->_rowy:0)) ; //! rows or lines 
 
              ascii_prt(0x20) ; 
              

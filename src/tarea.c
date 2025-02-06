@@ -6,11 +6,11 @@
 #include <unistd.h> 
 #include "termconfigure.h"
 #include "tarea.h"
- 
+#include "ttris.h" 
 
 int  area_surface[TEREA_HEIGHT][TEREA_WIDTH]={0} ; 
 
-struct area_location_xy * draw_area_zone(int start_colx , int start_rowy , int height , int width) 
+void  draw_area_zone(int start_colx , int start_rowy , int height , int width) 
 { 
   /*! make sure if  the given cols and rows fit  well*/ 
   int dim =  term_xymax() ; 
@@ -18,17 +18,6 @@ struct area_location_xy * draw_area_zone(int start_colx , int start_rowy , int h
   if((dim >>8) < start_colx || (dim  & 0xff) < start_rowy)   
     return nptr;    
   */ 
- 
- 
-  area_location_xy * ttris_playground_zone = (area_location_xy *) malloc(sizeof(*ttris_playground_zone)) ; 
-  if (!ttris_playground_zone)  
-  {
-    return  nptr ;  
-  }
- 
-  ttris_playground_zone->_colx = start_colx ; 
-  ttris_playground_zone->_rowy = start_rowy ;  
-
   
   tcmdexec_g(_cursors[cr_address] ,start_colx,start_rowy) ;
   int y=~0;
@@ -57,12 +46,11 @@ struct area_location_xy * draw_area_zone(int start_colx , int start_rowy , int h
 
   }
   tcmdexec(_reset) ; 
-  return ttris_playground_zone ;  
 } 
 
-struct area_location_xy * draw_area_zone_based(struct  area_location_xy * restrict  plgrd , int height , int width)  
+void  draw_area_zone_based(struct playground_area * restrict  plgrd , int height , int width)  
 {
-  return draw_area_zone(plgrd->_colx , plgrd->_rowy,  height , width) ; 
+  draw_area_zone(plgrd->_colx , plgrd->_rowy,  height , width) ; 
 }
 
 

@@ -59,19 +59,20 @@ static  void ttris_init_virtual_area_surface(void)
    }
 }
 
-
-static  struct  area_location_xy  *  ttris_next_shape_visualizer_zone(struct area_location_xy * playground_zone ,  int height, int width) 
+/*
+static  struct  playground_area  *  ttris_next_shape_visualizer_zone(struct playground_area * playground_zone ,  int height, int width) 
 {
-  struct area_location_xy  *  visualizer_yx =  (struct area_location_xy  *)  malloc(sizeof(*visualizer_yx)); 
+  struct playground_area  *  visualizer_yx =  (struct playground_area  *)  malloc(sizeof(*visualizer_yx)); 
   if(!visualizer_yx)
     return  nptr ; 
    
-    visualizer_yx->_rowy =playground_zone->_rowy+5 ;
-    visualizer_yx->_colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA/* Gap  between visualilze zone and playground zone*/);   
+    visualizer_yx->_rowy = playground_zone->_rowy+5 ;
+    visualizer_yx->_colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA);   
   
   draw_area_zone_based(visualizer_yx , height ,width) ; 
   return  visualizer_yx; 
 }
+*/
 
 
 static int  ttris_get_next_form(struct  tformctl  * restrict form , int id ) 
@@ -79,7 +80,7 @@ static int  ttris_get_next_form(struct  tformctl  * restrict form , int id )
   return ttris_form_generator(form, id) ;
 }
 
-static void ttris_update_visualizer_area(int ids_mask , struct  area_location_xy *  visualizer_area) 
+static void ttris_update_visualizer_area(int ids_mask , struct  preview_area *  visualizer_area) 
 { 
    
   struct  tformctl next_forms[2] = {
@@ -87,37 +88,51 @@ static void ttris_update_visualizer_area(int ids_mask , struct  area_location_xy
     {._form_type = (ids_mask & 0x0f), ._shape=SSIZE }
   } ;  
 
+  struct playground_area   prev_zone= { visualizer_area->_colx ,  visualizer_area->_rowy } ; 
 
-  //!TODO : clean the previous form
-  ttris_draw_form((next_forms),visualizer_area ,0,1);
-  ttris_draw_form((next_forms+1) ,visualizer_area ,1 ,1); 
+  ttris_draw_form((next_forms)   , &prev_zone ,0,1);
+  ttris_draw_form((next_forms+1) , &prev_zone ,1,1); 
   
   tcmdexec(_reset) ; 
 }
 
+static struct playground_area *  ttris_init_playground_at(int  ttris_coordx , int ttris_coordy )
+{
+  struct playground_area  *pgnd_zone =  ( struct playground_area* ) malloc(sizeof(*pgnd_zone)) ; 
+
+  if (!pgnd_zone) 
+    return (struct playground_area*) 0 ; 
+
+  
+  pgnd_zone->_colx = ttris_coordx ; 
+  pgnd_zone->_rowy = ttris_coordy ; 
+  draw_area_zone_based(pgnd_zone , TEREA_HEIGHT , TEREA_WIDTH) ; 
+  
+  pgnd_zone->_preview_area._rowy = pgnd_zone->_rowy + 5 ;//  Related  to top position   
+  pgnd_zone->_preview_area._colx = pgnd_zone->_colx + ((TEREA_WIDTH<<1))+GAP_BETWEEN_PGND_AREA_n_PREV_AREA; 
+
+  struct playground_area prev_clone = { pgnd_zone->_preview_area._colx , pgnd_zone->_preview_area._rowy}  ; 
+  draw_area_zone_based(&prev_clone , 6,6) ; 
+
+  return pgnd_zone; 
+
+}
 
 int ttris(int ttris_coordx , int ttris_coordy) 
 {
   if(clscr()) 
     warnx("Fail to clear the screen at first stage") ; 
-
  
   ttris_init_virtual_area_surface(); 
   ttris_touch_ctrl() ; 
   
-
-  struct area_location_xy * playground_zone = nptr; 
-  //!TODO :  move area coordonate across files  
-  playground_zone =  draw_area_zone(10,0,TEREA_HEIGHT, TEREA_WIDTH) ; 
-  
+  struct playground_area  *playground_zone = ttris_init_playground_at(ttris_coordx , ttris_coordy);
   if (!playground_zone) 
   {
      warnx("Cannot draw in area zone that overflow the current term") ; 
      return ~0 ; 
   }
  
-  struct area_location_xy* visualizer_area = ttris_next_shape_visualizer_zone(playground_zone , 6,6) ; 
-
   struct tformctl  ttris_form_shadow; 
   
   struct tformctl_queue *ttris_shapes  = ttris_form_init() ; 
@@ -127,7 +142,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
   struct tformctl  *ttris_form =  &ttris_shapes->_current_form ; 
 
   int  ids = ttris_shapes->_formctl_idsmask  ; 
-  ttris_update_visualizer_area(ids , visualizer_area) ; 
+  ttris_update_visualizer_area(ids , &playground_zone->_preview_area) ; 
 
   int  reach_bottom =0 ; 
   while(1) 
@@ -137,7 +152,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
      {
        ttris_record_form(ttris_form) ; 
        ids = ttris_form_get_next(ttris_shapes) ;   
-       ttris_update_visualizer_area(ids, visualizer_area) ; 
+       ttris_update_visualizer_area(ids, &playground_zone->_preview_area) ; 
        reach_bottom&=~RBTM; 
      }
     
@@ -414,8 +429,8 @@ static void ttris_dectect_collision_between_object(struct  tformctl * restrict c
 
    current_form->_figure-=1; 
 
-   ttris_draw_form(current_form ,&(struct area_location_xy){10, 0} ,0,0)  ;
-   ttris_draw_form(prevs_form, &(struct area_location_xy){10, 0} ,1,0)  ; 
+   ttris_draw_form(current_form ,&(struct playground_area){10, 0} ,0,0)  ;
+   ttris_draw_form(prevs_form, &(struct playground_area){10, 0} ,1,0)  ; 
 
    prevs_form  = current_form ; 
     

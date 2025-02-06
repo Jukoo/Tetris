@@ -66,6 +66,9 @@ static void ttris_init_virtual_area_surface(void);
 
 static void ttris_touch_ctrl(void) ; 
 
+
+static struct playground_area  * ttris_init_playground_at(int  ttris_coordx , int  ttris_coordy) ; 
+
 /* @fn  ttris_next_shape_visualizer_zone(struct  area_location_xy  *) 
  * @brief  draw a small  area  to visualize  incomming form  
  * @parm  struct area_location_xy *  
@@ -81,7 +84,7 @@ static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id
 
 
 
-static void  ttris_update_visualizer_area(int ids_mask , struct  area_location_xy *  visualizer_zone) ;  
+static void  ttris_update_visualizer_area(int ids_mask , struct preview_area *  visualizer_zone) ;  
 
 /* @fn ttris(void)  *  entry of the game 
  * @brief handle  the game main function of the game 

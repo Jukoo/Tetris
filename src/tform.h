@@ -81,7 +81,7 @@ extern  int  ttris_form_get_next(struct tformctl_queue * __restrict__  tfQ) ;
 /* @fn ttris_draw_form()
  */ 
 void  ttris_draw_form(struct  tformctl * tform ,  
-                      struct  area_location_xy * __restrict__  plgnd_zone ,  int color ,  int  gap_consideration); 
+                      struct  playground_area * __restrict__  plgnd_zone ,  int color ,  int  gap_consideration); 
 
 
 
