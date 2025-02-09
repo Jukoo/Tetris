@@ -6,8 +6,15 @@
 #if !defined(ttris_h) 
 #define     ttris_h
 
-#include "tform.h" 
+#include <time.h>
+#include <errno.h> 
+#include <unistd.h> 
 
+#include "tform.h"  
+
+#ifndef   DROP_DOWN_SPEED_OBJECT  
+# define  DROP_DOWN_SPEED_OBJECT 200 
+#endif 
 enum { 
   MV_LFT , 
 #define  __MV_LFT  0x61 
@@ -70,7 +77,20 @@ static void ttris_touch_ctrl(void) ;
 static struct playground_area  * ttris_init_playground_at(int  ttris_coordx , int  ttris_coordy) ; 
 
 
-
+__extern_always_inline void ttris_clk_time_msleep(int millis) 
+{  
+  struct timespec  tspec = { 
+    .tv_sec =   (millis / 1000) , 
+    .tv_nsec=   (millis % 1000) / 10000000UL  
+  };
+ 
+#if defined(_POSIX_C_SOURCE) && _POSIX_C_SOURCE >= 200112L
+  while(~0 == (clock_nanosleep(CLOCK_REALTIME ,  0, &tspec ,0) && EINTR == errno )) ; 
+#else 
+  usleep(millis) ; 
+#endif 
+  
+}
 /* @fn 
  *
  * */ 

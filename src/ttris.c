@@ -73,7 +73,8 @@ static void ttris_update_visualizer_area(int ids_mask , struct  preview_area *  
     {._form_type = (ids_mask & 0x0f), ._shape=SSIZE }
   } ;  
 
-  struct playground_area   prev_zone= { visualizer_area->_colx ,  visualizer_area->_rowy } ; 
+  
+  struct playground_area   prev_zone= { visualizer_area->_colx ,visualizer_area->_rowy ,PREV_AREA} ; 
 
   ttris_draw_form((next_forms)   , &prev_zone ,0,1);
   ttris_draw_form((next_forms+1) , &prev_zone ,1,1); 
@@ -91,13 +92,19 @@ static struct playground_area *  ttris_init_playground_at(int  ttris_coordx , in
   
   pgnd_zone->_colx = ttris_coordx ; 
   pgnd_zone->_rowy = ttris_coordy ; 
+  pgnd_zone->_tag_marker = PGND_AREA ; 
   draw_area_zone_based(pgnd_zone , TEREA_HEIGHT , TEREA_WIDTH) ; 
+
+#if LINK_PREV_AREA_2_PGND_AREA 
   
   pgnd_zone->_preview_area._rowy = pgnd_zone->_rowy + 5 ;//  Related  to top position   
   pgnd_zone->_preview_area._colx = pgnd_zone->_colx + ((TEREA_WIDTH<<1))+GAP_BETWEEN_PGND_AREA_n_PREV_AREA; 
+  pgnd_zone->_preview_area._tag_marker = PREV_AREA ; 
 
   struct playground_area prev_clone = { pgnd_zone->_preview_area._colx , pgnd_zone->_preview_area._rowy}  ; 
-  draw_area_zone_based(&prev_clone , 6,6) ; 
+  draw_area_zone_based(&prev_clone , 5,5) ; 
+
+#endif 
 
   return pgnd_zone; 
 
@@ -186,13 +193,14 @@ int ttris(int ttris_coordx , int ttris_coordy)
        if ( (ttris_form->_shape != ttris_form_shadow._shape) || 
             (ttris_form->_figure!= ttris_form_shadow._figure)||
             (ttris_form->_orientation!= ttris_form_shadow._orientation)) 
-     {
-       ttris_draw_form(&ttris_form_shadow,playground_zone,0,0) ; 
-       ttris_form_shadow =  *ttris_form; 
-       ttris_draw_form(ttris_form,playground_zone,1,0) ; 
-     }
+     
+       {
 
-       nanosleep( &(struct  timespec){0,1000},  nptr) ; 
+         ttris_draw_form(&ttris_form_shadow,playground_zone,0,0) ; 
+         ttris_form_shadow =  *ttris_form; 
+         ttris_draw_form(ttris_form,playground_zone,1,0) ; 
+     
+       }
       
      }  
 
@@ -201,6 +209,8 @@ int ttris(int ttris_coordx , int ttris_coordy)
 }
 
 
+//!TODO : add new parameter   for drop down speed  
+//->  int  ddown_mode_t(enum  { SLOW , NORMAL, FAST }) 
 static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
 {
 
@@ -211,7 +221,7 @@ static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
   };  
   struct timeval  timeout  = { 
     .tv_sec  = 0 , 
-    .tv_usec = 200
+    .tv_usec = DROP_DOWN_SPEED_OBJECT 
   };
   
   /*NOTE: Only listening on function failure ; No verification on timeout event */
@@ -222,7 +232,7 @@ static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
     case POLL_EVT_TIMEOUT:return POLL_EVT_TIMEOUT ;  
   }
 
-  char bf_key[0xff]={0} ; 
+  unsigned char bf_key[0xff]={0} ; 
   if( pfd.revents & POLLIN ) 
   {
      ssize_t rb =  read(pfd.fd,  bf_key ,  0xff); 

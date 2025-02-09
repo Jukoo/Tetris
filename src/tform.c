@@ -292,7 +292,14 @@ void ttris_draw_form(struct  tformctl * tform, struct  playground_area *  locati
       tcmdexec_p(_bcolor, COLOR_WHITE+ tform->_form_type);  
 
 	int rows=~0; 
-    int fill_the_gap =0 ;    
+    int fill_the_gap =0 ;   
+
+    int  padding_shape = (tform->_shape<<1)  ; 
+    if (location_playground->_tag_marker == PREV_AREA)
+    {
+      /*! Do not apply the padding shape on previews area */
+      padding_shape&=~padding_shape ;  
+    }
     
 	while(++rows <  FSIZE)
 	{
@@ -303,11 +310,11 @@ void ttris_draw_form(struct  tformctl * tform, struct  playground_area *  locati
            if(ttris_forms[tform->_form_type][tform->_orientation][rows][cols]!=0) 
            {
              tcmdexec_g(_cursors[cr_address],
-                ((location_playground->_colx -(gap_consideration!=0 ?  7 : 0 ) + 1))   +           /* start at col 1 */ 
-                (tform->_shape <<1) +                      /* doubling the shape size  */
+                ((location_playground->_colx + 1)) +           /* start at col 1 */ 
+                 padding_shape +                      /* doubling the shape size  */
                  (cols << 1)                                /* and column to corolate the shape fit */
 
-                 ,tform->_figure+1+location_playground->_rowy+rows+(gap_consideration !=0 ? location_playground->_rowy:0)) ; //! rows or lines 
+                 ,tform->_figure+1+location_playground->_rowy+rows) ; //! rows or lines 
 
              ascii_prt(0x20) ; 
              

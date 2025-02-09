@@ -14,17 +14,26 @@
 #define LINK_PREV_AREA_2_PGND_AREA   1
 #define GAP_BETWEEN_PGND_AREA_n_PREV_AREA  10 
 
+enum { 
+  PGND_AREA,
+#define  PGND_AREA  PGND_AREA 
+  PREV_AREA 
+#define PREV_AREA   PREV_AREA 
+} ; 
+
 typedef struct  preview_area     preview_area ; 
 struct  preview_area 
 {
    int _colx ; 
-   int _rowy ; 
+   int _rowy ;
+   int _tag_marker;   
 } ; 
 
 typedef struct  playground_area  playground_area;  
 struct  playground_area { 
   int   _colx; 
   int   _rowy;
+  int   _tag_marker;   
 #if LINK_PREV_AREA_2_PGND_AREA
   struct preview_area  _preview_area ; 
 #endif 
