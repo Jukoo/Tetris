@@ -13,7 +13,7 @@
 #include "tform.h"  
 
 #ifndef   DROP_DOWN_SPEED_OBJECT  
-# define  DROP_DOWN_SPEED_OBJECT 200 
+# define  DROP_DOWN_SPEED_OBJECT  50 //* for debuging purpose  NOTE: move to 200 on release */ 
 #endif 
 enum { 
   MV_LFT , 
@@ -147,7 +147,8 @@ static int ttris_figure_is_in_area(struct  tformctl *__restrict__ figure) ;
 /* @fn  ttris_dectect_collision_between_object(struct  tformctl * ,  struct  tformctl *) ; 
  * @brief detecting collision between  object   
  */ 
-static void ttris_dectect_collision_between_object(struct  tformctl* __restrict__ current_figure , 
+static void ttris_dectect_collision_between_object(struct  playground_area *__restrict__  playground_zone  , 
+                                                   struct  tformctl* __restrict__ current_figure , 
                                                    struct  tformctl* __restrict__ prevs_figure) ; 
 /* @fn  ttris_dbg_prt(int , int  , const char * , ... )  
  * @brief  a debug print function  thats write on  (x,y) location in terminal 

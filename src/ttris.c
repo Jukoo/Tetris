@@ -88,7 +88,6 @@ static struct playground_area *  ttris_init_playground_at(int  ttris_coordx , in
 
   if (!pgnd_zone) 
     return (struct playground_area*) 0 ; 
-
   
   pgnd_zone->_colx = ttris_coordx ; 
   pgnd_zone->_rowy = ttris_coordy ; 
@@ -107,7 +106,6 @@ static struct playground_area *  ttris_init_playground_at(int  ttris_coordx , in
 #endif 
 
   return pgnd_zone; 
-
 }
 
 int ttris(int ttris_coordx , int ttris_coordy) 
@@ -167,7 +165,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
        //!TODO: FIXME  : Object Collision Detection 
        if (reach_bottom  == RCLS)   
        {
-         ttris_dectect_collision_between_object(ttris_form ,  &ttris_form_shadow); 
+         ttris_dectect_collision_between_object(playground_zone ,ttris_form ,  &ttris_form_shadow); 
          reach_bottom<<=4; 
          reach_bottom|=RBTM ;
        }
@@ -181,7 +179,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
        reach_bottom = ttris_figure_is_in_area(ttris_form) ;
        if (reach_bottom  == RCLS)   
        {
-         ttris_dectect_collision_between_object(ttris_form ,  &ttris_form_shadow); 
+         ttris_dectect_collision_between_object( playground_zone, ttris_form ,  &ttris_form_shadow); 
 
          reach_bottom<<=4; 
          reach_bottom|=RBTM ;  
@@ -416,15 +414,16 @@ static int  ttris_figure_is_in_area(struct tformctl * restrict figure)
   return 0 ; 
 }
 
-static void ttris_dectect_collision_between_object(struct  tformctl * restrict current_form,  
-                                                   struct  tformctl * restrict  prevs_form) 
+static void ttris_dectect_collision_between_object( struct  playground_area  * restrict  pgnd ,  
+                                                    struct  tformctl * restrict current_form,  
+                                                    struct  tformctl * restrict  prevs_form) 
 {
    
 
    current_form->_figure-=1; 
 
-   ttris_draw_form(current_form ,&(struct playground_area){10, 0} ,0,0)  ;
-   ttris_draw_form(prevs_form, &(struct playground_area){10, 0} ,1,0)  ; 
+   ttris_draw_form(current_form ,pgnd,0,0)  ;
+   ttris_draw_form(prevs_form, pgnd,1,0)  ; 
 
    prevs_form  = current_form ; 
     
