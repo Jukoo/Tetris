@@ -105,14 +105,14 @@ static void  ttris_update_visualizer_area(int ids_mask , struct preview_area *  
  * @brief handle  the game main function of the game 
  * @return int 0:ok otherwise error 
  */
-int ttris(int ttris_coordx , int ttris_coordy) ;  
+int ttris(int ttris_coordx , int ttris_coordy ,  int  ttris_drop_down_speed ) ;  
 
 
 /* @fn ttris_listen_touch_ctrl(void) 
  * @brief  listen  for direction key touch 
            to controle the  shape form  left rigt down and rotation  
  */
-static int ttris_listen_touch_ctrl(struct  tformctl * __restrict__ figure) ; 
+static int ttris_listen_touch_ctrl(struct  tformctl * __restrict__ figure , int  ttris_drop_down_speed) ;  
 
 /* @fn ttris_record_form(struct tformctl *) 
  * @brief record tetris  form  in  area matix 
@@ -120,21 +120,21 @@ static int ttris_listen_touch_ctrl(struct  tformctl * __restrict__ figure) ;
  * @return - 
  *  
  */
-static void  ttris_record_form (struct tformctl * __restrict__ figure) ; 
+static void  ttris_record_form (struct tformctl * __restrict__ figure ,  struct playground_area  * __restrict__ playground_zone ) ; 
 
 /*
  *  @fn  ttris_is_rows_line_completed() 
  *  @brief check in the matrix aka area matrix 
  *         thats represent the area  of playground game 
  * */ 
-static void ttris_check_rows_line_completed(void) ; 
+static void ttris_check_rows_line_completed(struct playground_area  * __restrict__  playground_zone) ; 
 
 /* @fn ttris_mova_all_downward(int line_or_row_location)  
  * @brief  after checking when the the rows is completed 
  *         move all form down 
  * @param  int line_or_row_location - where the complet line check happend 
  **/
-static void ttris_move_all_downward(int  line_or_row_location ) ; 
+static void ttris_move_all_downward(int  line_or_row_location  ,  struct playground_area * __restrict__ playground_zone ) ; 
 
 /* @fn ttris_figure_is_in_area(struct  *tformctl) 
  * @brief check  the figure  is in the area  

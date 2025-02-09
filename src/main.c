@@ -33,6 +33,12 @@ main(int ac  , char **av , char**env)
     xy_begin._coordy = strtol(*(av+2),  nptr ,  10 ) ; 
   }  
 
+  int dds = DROP_DOWN_SPEED_OBJECT ;  
+  if ((void *)0  !=  (av+3))
+  {
+    dds =  strtol(*(av+3) ,  nptr , 10 ); 
+    dds = dds !=0 ?dds :  DROP_DOWN_SPEED_OBJECT; 
+  }
   
   if (setting_terminal())
   {
@@ -40,7 +46,7 @@ main(int ac  , char **av , char**env)
   }
 
   kbrctl_mode&=~DIRSCTRL ; //!disable keyboard direction control 
-  if(ttris(xy_begin._coordx , xy_begin._coordy))  
+  if(ttris(xy_begin._coordx , xy_begin._coordy ,  dds ))  
   {
      hdlerr(pstatus=EXIT_FAILURE, setting_terminal,
          "Cannot Run Tetris Game\n") ;

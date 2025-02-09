@@ -108,7 +108,7 @@ static struct playground_area *  ttris_init_playground_at(int  ttris_coordx , in
   return pgnd_zone; 
 }
 
-int ttris(int ttris_coordx , int ttris_coordy) 
+int ttris(int ttris_coordx , int ttris_coordy ,  int dds ) 
 {
   if(clscr()) 
     warnx("Fail to clear the screen at first stage") ; 
@@ -140,7 +140,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
      /*Generate new form when it reach the bottom */ 
      if(reach_bottom & RBTM)  
      {
-       ttris_record_form(ttris_form) ; 
+       ttris_record_form(ttris_form  ,  playground_zone) ; 
        ids = ttris_form_get_next(ttris_shapes) ;   
        ttris_update_visualizer_area(ids, &playground_zone->_preview_area) ; 
        reach_bottom&=~RBTM; 
@@ -150,7 +150,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
      ttris_draw_form(ttris_form,playground_zone,1,0) ; 
      ttris_form_shadow = *ttris_form; 
      //!listen to keyboard direction control event  
-     int input_evt   =  ttris_listen_touch_ctrl(ttris_form); 
+     int input_evt   =  ttris_listen_touch_ctrl(ttris_form,  dds); 
 
      //!no key pressed 
      if ( (POLL_EVT_TIMEOUT & 0x0f) == input_evt)  
@@ -209,7 +209,7 @@ int ttris(int ttris_coordx , int ttris_coordy)
 
 //!TODO : add new parameter   for drop down speed  
 //->  int  ddown_mode_t(enum  { SLOW , NORMAL, FAST }) 
-static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
+static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure  , int dds )
 {
 
   struct pollfd pfd = { 
@@ -219,7 +219,7 @@ static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
   };  
   struct timeval  timeout  = { 
     .tv_sec  = 0 , 
-    .tv_usec = DROP_DOWN_SPEED_OBJECT 
+    .tv_usec =  (dds ==0)  ? DROP_DOWN_SPEED_OBJECT  : dds  
   };
   
   /*NOTE: Only listening on function failure ; No verification on timeout event */
@@ -273,7 +273,7 @@ static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure)
 
 
 
-static void ttris_record_form(struct  tformctl  *restrict figure) 
+static void ttris_record_form(struct  tformctl  *restrict figure , struct playground_area *restrict pgnd_zone) 
 {
 
   int  form_item  = ~0 ; 
@@ -300,12 +300,12 @@ static void ttris_record_form(struct  tformctl  *restrict figure)
          //printf("[x]"); 
       
      }
-      ttris_check_rows_line_completed() ; 
+      ttris_check_rows_line_completed(pgnd_zone) ; 
   }
 
 }
 
-static void ttris_check_rows_line_completed(void) 
+static void ttris_check_rows_line_completed(struct playground_area * restrict  pgnd_zone) 
 { 
   
   int line=~0; 
@@ -327,7 +327,7 @@ static void ttris_check_rows_line_completed(void)
      if(1 == rows_completed)
      { 
        ttris_dbg_prt(100,1, "completed! at row  %i\n" , line+3);
-       ttris_move_all_downward(line) ; 
+       ttris_move_all_downward(line , pgnd_zone) ; 
        continue ; 
        
      }
@@ -336,7 +336,7 @@ static void ttris_check_rows_line_completed(void)
    
 }
 
-static void ttris_move_all_downward(int  rowy) 
+static void ttris_move_all_downward(int  rowy ,  struct playground_area *restrict pgnd_zone) 
 {
  
    while(0 < rowy--) 
@@ -359,7 +359,7 @@ static void ttris_move_all_downward(int  rowy)
         }else  
           tcmdexec(_reset);
 
-        tcmdexec_g(_cursors[cr_address], 10+(cols<<1), rowy+2) ; 
+        tcmdexec_g(_cursors[cr_address], pgnd_zone->_colx +(cols<<1), pgnd_zone->_rowy+rowy+2) ; 
         ascii_prt(0x20);
         ascii_prt(0x20); 
       }
@@ -405,10 +405,8 @@ static int  ttris_figure_is_in_area(struct tformctl * restrict figure)
            return RCLS ; 
              
          }
-         
        }
      } 
-     
   }
   
   return 0 ; 
