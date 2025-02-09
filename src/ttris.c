@@ -31,7 +31,7 @@ static void ttris_touch_ctrl(void)
   if (0 == kbrctl_mode)
   {
     warnx("ctrl mode can't be empty") ; 
-    //!NOTE : Enable WASDCTRL  by default ; 
+    //!NOTE : Enable WASD  direction control  keyboard by default ; 
     kbrctl_mode|= WASDCTRL ;   
   }
   if (kbrctl_mode& WASDCTRL)   
@@ -58,21 +58,6 @@ static  void ttris_init_virtual_area_surface(void)
 
    }
 }
-
-/*
-static  struct  playground_area  *  ttris_next_shape_visualizer_zone(struct playground_area * playground_zone ,  int height, int width) 
-{
-  struct playground_area  *  visualizer_yx =  (struct playground_area  *)  malloc(sizeof(*visualizer_yx)); 
-  if(!visualizer_yx)
-    return  nptr ; 
-   
-    visualizer_yx->_rowy = playground_zone->_rowy+5 ;
-    visualizer_yx->_colx = playground_zone->_colx+ ((TEREA_WIDTH<<1)+PREVISUALIZER_AREA);   
-  
-  draw_area_zone_based(visualizer_yx , height ,width) ; 
-  return  visualizer_yx; 
-}
-*/
 
 
 static int  ttris_get_next_form(struct  tformctl  * restrict form , int id ) 
@@ -180,7 +165,6 @@ int ttris(int ttris_coordx , int ttris_coordy)
          reach_bottom|=RBTM ;
        }
      
-
        ttris_draw_form(ttris_form,playground_zone,1,0) ;  
        continue;  
      } 

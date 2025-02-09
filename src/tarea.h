@@ -11,10 +11,6 @@
 #define  TEREA_SURFACE_DEFVAL  ~0 
 
 
-//#TODO : move this to  termconfigure.h
-#define  ascii_prt(__ascii_code_symbole)  \
-  write(STDOUT_FILENO, (char[2]){__ascii_code_symbole & 0xff},2)
-
 #define LINK_PREV_AREA_2_PGND_AREA   1
 #define GAP_BETWEEN_PGND_AREA_n_PREV_AREA  10 
 

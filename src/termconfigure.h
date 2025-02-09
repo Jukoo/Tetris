@@ -8,6 +8,10 @@
 #include <term.h>  
 #include <sys/cdefs.h> 
 
+
+#define  ascii_prt(__ascii_code_symbole)  \
+  write(STDOUT_FILENO, (char[2]){__ascii_code_symbole & 0xff},2)
+
 #define nptr (__ptr_t ) 0 
 #define targs (1<<0),putchar
 

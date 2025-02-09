@@ -69,12 +69,7 @@ static void ttris_touch_ctrl(void) ;
 
 static struct playground_area  * ttris_init_playground_at(int  ttris_coordx , int  ttris_coordy) ; 
 
-/* @fn  ttris_next_shape_visualizer_zone(struct  area_location_xy  *) 
- * @brief  draw a small  area  to visualize  incomming form  
- * @parm  struct area_location_xy *  
- */
-static struct area_location_xy * ttris_next_shape_visualizer_zone(struct area_location_xy * main_playground_zone,
-                                                int height ,int width); 
+
 
 /* @fn 
  *
