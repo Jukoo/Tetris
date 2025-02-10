@@ -55,7 +55,6 @@ static  void ttris_init_virtual_area_surface(void)
      int col=~0; 
      while(++col<TEREA_WIDTH)  
        *(*(area_surface+line)+col)  = TEREA_SURFACE_DEFVAL ; 
-
    }
 }
 
@@ -336,33 +335,43 @@ static void ttris_check_rows_line_completed(struct playground_area * restrict  p
    
 }
 
-static void ttris_move_all_downward(int  rowy ,  struct playground_area *restrict pgnd_zone) 
+//!static void ttris_move_block_above_to_downward
+static void ttris_move_all_downward(int  line ,  struct playground_area *restrict pgnd_zone) 
 {
- 
-   while(0 < rowy--) 
+    
+   int completed_at = line+(~0) ; 
+
+   struct line_above { 
+    int *row_above ;   
+    int cell_value ; 
+   } line_above ;  
+
+   while(0 < completed_at) 
    {
-      int * current_matched_line = *(area_surface+rowy) ;  
-      int * line_above = (current_matched_line--) ; 
+      int * completed_line = *(area_surface+completed_at) ;  
+      line_above.row_above= (completed_line--) ; 
+      line_above.cell_value =~0 ; 
       int  cols=~0 ; 
-      int line_above_value =~0 ; 
       while (TEREA_WIDTH >++cols) 
       { 
-        
-        line_above_value= *(line_above+cols) ;
-      
-        if (rowy==0) 
-          line_above_value= *(current_matched_line+cols) = ~0; 
-        
-        if (~0 !=  line_above_value) 
-        {
-           tcmdexec_p(_bcolor,  COLOR_WHITE+line_above_value);  
-        }else  
-          tcmdexec(_reset);
+        line_above.cell_value = *(line_above.row_above+cols);  
 
-        tcmdexec_g(_cursors[cr_address], pgnd_zone->_colx +(cols<<1), pgnd_zone->_rowy+rowy+2) ; 
-        ascii_prt(0x20);
-        ascii_prt(0x20); 
+        if( 0  ==  completed_line ) 
+           line_above.cell_value =  *(completed_line+cols) = ~0 ; 
+
+
+        if (~0 != line_above.cell_value)  
+        {
+           tcmdexec_p(_bcolor,  COLOR_WHITE+line_above.cell_value); 
+        }else {
+          tcmdexec(_reset);
+        }
+
+        tcmdexec_g(_cursors[cr_address], pgnd_zone->_colx +(cols<<1)+1, pgnd_zone->_rowy+completed_at+2) ; 
+        ascii_prt(0x20),ascii_prt(0x20); 
       }
+
+      completed_at+=~(completed_at^completed_at) ;  
    }
   
    //tcmdexec(_reset) ; 
@@ -416,7 +425,6 @@ static void ttris_dectect_collision_between_object( struct  playground_area  * r
                                                     struct  tformctl * restrict current_form,  
                                                     struct  tformctl * restrict  prevs_form) 
 {
-   
 
    current_form->_figure-=1; 
 
