@@ -326,7 +326,7 @@ static void ttris_check_rows_line_completed(struct playground_area * restrict  p
      if(1 == rows_completed)
      { 
        ttris_dbg_prt(100,1, "completed! at row  %i\n" , line+3);
-       ttris_move_all_downward(line , pgnd_zone) ; 
+       ttris_move_all_blocks_above_to_downward(line , pgnd_zone) ; 
        continue ; 
        
      }
@@ -335,34 +335,32 @@ static void ttris_check_rows_line_completed(struct playground_area * restrict  p
    
 }
 
-//!static void ttris_move_block_above_to_downward
-static void ttris_move_all_downward(int  line ,  struct playground_area *restrict pgnd_zone) 
+static void ttris_move_all_blocks_above_to_downward (int  line ,  struct playground_area *restrict pgnd_zone) 
 {
     
-   int completed_at = line+(~0) ; 
+   int completed_at = line+(~0) ;  
 
-   struct line_above { 
-    int *row_above ;   
-    int cell_value ; 
-   } line_above ;  
+   struct  Upline  { 
+    int *_line;    
+    int  _cell_value ;
+   } next_upper_line ; 
 
    while(0 < completed_at) 
    {
       int * completed_line = *(area_surface+completed_at) ;  
-      line_above.row_above= (completed_line--) ; 
-      line_above.cell_value =~0 ; 
+      next_upper_line._line= (completed_line--) ; 
+      next_upper_line._cell_value =~0 ; 
       int  cols=~0 ; 
       while (TEREA_WIDTH >++cols) 
       { 
-        line_above.cell_value = *(line_above.row_above+cols);  
+        next_upper_line._cell_value = *(next_upper_line._line +cols);  
 
         if( 0  ==  completed_line ) 
-           line_above.cell_value =  *(completed_line+cols) = ~0 ; 
+           next_upper_line._cell_value =  *(completed_line+cols) = ~0 ; 
 
-
-        if (~0 != line_above.cell_value)  
+        if (~0 != next_upper_line._cell_value)  
         {
-           tcmdexec_p(_bcolor,  COLOR_WHITE+line_above.cell_value); 
+           tcmdexec_p(_bcolor,  COLOR_WHITE+ next_upper_line._cell_value); 
         }else {
           tcmdexec(_reset);
         }
@@ -374,7 +372,6 @@ static void ttris_move_all_downward(int  line ,  struct playground_area *restric
       completed_at+=~(completed_at^completed_at) ;  
    }
   
-   //tcmdexec(_reset) ; 
 }
 
 static int  ttris_figure_is_in_area(struct tformctl * restrict figure)   

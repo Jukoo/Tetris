@@ -134,7 +134,7 @@ static void ttris_check_rows_line_completed(struct playground_area  * __restrict
  *         move all form down 
  * @param  int line_or_row_location - where the complet line check happend 
  **/
-static void ttris_move_all_downward(int  line_or_row_location  ,  struct playground_area * __restrict__ playground_zone ) ; 
+static void ttris_move_all_blocks_above_to_downward(int at_line ,  struct playground_area * __restrict__ playground_zone ) ; 
 
 /* @fn ttris_figure_is_in_area(struct  *tformctl) 
  * @brief check  the figure  is in the area  
