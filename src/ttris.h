@@ -1,5 +1,5 @@
 /* @file ttris.h
- * @brief tetris game  logic function proto 
+ * @brief tetris game  logic function prototype
  * @author Umar Ba <jUmarB@protonmail.com> 
  */
 
@@ -40,6 +40,7 @@ enum {
 #define  FLEXCTRL  WASDCTRL |  DIRSCTRL   //! use both 
 extern int dirctl_cmd[2][4] ;  
 
+/*!  keyboard  control mode   */
 extern int kbrctl_mode;  
 
 #define  RLFT  (1<<1)
@@ -73,10 +74,20 @@ static void ttris_init_virtual_area_surface(void);
 
 static void ttris_touch_ctrl(void) ; 
 
-
+/* @fn ttris_init_playground_at(int  ,int) 
+ * @brief initialize where the game  start  on the  terminal
+ *        by given xy coordonnate 
+ * @param int  -  x coord 
+ * @param int  -  y coord 
+ * @return playground_area *  -- should be not null  
+ * 
+ */
 static struct playground_area  * ttris_init_playground_at(int  ttris_coordx , int  ttris_coordy) ; 
 
-
+/* @fn  ttris_clk_time_msleep(int) 
+ * @brief  internal timer in millisec 
+ * @param  int - millisec 
+ */
 __extern_always_inline void ttris_clk_time_msleep(int millis) 
 {  
   struct timespec  tspec = { 
@@ -91,13 +102,22 @@ __extern_always_inline void ttris_clk_time_msleep(int millis)
 #endif 
   
 }
-/* @fn 
- *
+
+/* @fn ttris_get_next_form(struct tformctl * , int) [[deprecated]] 
+ * @brief  retrieve  next  incomming form and give id to the currend form  
+ * @param  struct tformctl * tforctl data structure 
+ * @param  int  -   id current form 
+ * @retrun int  -   return  the next incomming form id 
  * */ 
 
-static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id  ) ; 
+static  int ttris_get_next_form(struct tformctl  *  __restrict__ figure , int id  ) __attribute__((deprecated)) ; 
 
-
+/* @fn ttris_update_visualizer_area(int , struct preview_area *) 
+ * @brief  update the visualizer area for next incomming form or shape 
+ * @param  int - bit  masks identifier   
+ * @param  struct preview_area * - the visualizer zone 
+ * 
+ */
 
 static void  ttris_update_visualizer_area(int ids_mask , struct preview_area *  visualizer_zone) ;  
 
@@ -113,6 +133,17 @@ int ttris(int ttris_coordx , int ttris_coordy ,  int  ttris_drop_down_speed ) ;
            to controle the  shape form  left rigt down and rotation  
  */
 static int ttris_listen_touch_ctrl(struct  tformctl * __restrict__ figure , int  ttris_drop_down_speed) ;  
+
+
+static void ttris_register_shape(struct tformctl  * __restrict__ figure , struct playground_area * __restrict__ playground_zone) ; 
+
+
+/* @fn ttris_show_vmatrx(int (*)[TEREA_WIDTH]) 
+ * @brief this function is used for debugging purpose 
+ *        to get visualizer of the matrix  representation ; 
+ *
+ * */
+static void  ttris_show_vmatrx(int (*virtual_matrix_area_surface)[TEREA_WIDTH]); 
 
 /* @fn ttris_record_form(struct tformctl *) 
  * @brief record tetris  form  in  area matix 

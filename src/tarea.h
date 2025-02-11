@@ -39,18 +39,24 @@ struct  playground_area {
 #endif 
 };
 
-
 extern int area_surface[TEREA_HEIGHT][TEREA_WIDTH] ; 
 
 
-/* @fn draw_area_zone (int colum , int row) 
+/* @fn draw_area_zone (int colum , int row , int  height , int  width) 
  * @brief draw the area of the game 
  * @param int  - coordonate  of colum x  
  * @param int  - coordonate  of row   y 
- * @return int status code 
+ * @param int  - height size 
+ * @param int  - width  size 
  */
-
 void draw_area_zone(int  start_colx , int start_rowy ,  int height , int width) ; 
+
+/*  @fn draw_area_zone_based(struct playground_area  *  , int , int) 
+ *  @brief draw  delemited area  base on playground_area 
+ *  @param playground_area * 
+ *  @param int  - height size 
+ *  @param int  - width  size 
+ */
 void draw_area_zone_based(struct playground_area *  __restrict__   playground,
                                                int height , int width);
 
@@ -61,6 +67,5 @@ void draw_area_zone_based(struct playground_area *  __restrict__   playground,
  *  the MSB : col  
  *  using 16 bits signature 
  */
-
 static int term_xymax(void) ; 
 #endif 

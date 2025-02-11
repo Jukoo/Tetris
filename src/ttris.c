@@ -139,7 +139,8 @@ int ttris(int ttris_coordx , int ttris_coordy ,  int dds )
      /*Generate new form when it reach the bottom */ 
      if(reach_bottom & RBTM)  
      {
-       ttris_record_form(ttris_form  ,  playground_zone) ; 
+       //ttris_record_form(ttris_form  ,  playground_zone) ;
+       ttris_register_shape(ttris_form, playground_zone) ; 
        ids = ttris_form_get_next(ttris_shapes) ;   
        ttris_update_visualizer_area(ids, &playground_zone->_preview_area) ; 
        reach_bottom&=~RBTM; 
@@ -272,34 +273,86 @@ static int ttris_listen_touch_ctrl(struct  tformctl * restrict figure  , int dds
 
 
 
+static void ttris_register_shape(struct tformctl * restrict  figure , struct playground_area  *restrict pgnd_zone)
+{
+   
+  int rows_height_index  = 0 , cols_width_index =0  ;
+  int *scan_shape_rowline = (int *) 0 ;    
+  int r = TEREA_HEIGHT;  
+  tcmdexec_g(_cursors[cr_address]  ,(TEREA_WIDTH<<1)+20, r) ; 
+
+  while(FSIZE > rows_height_index) 
+  {  
+    tcmdexec_g(_cursors[cr_address]  ,(TEREA_WIDTH<<1)+20, r--) ; 
+
+    scan_shape_rowline = *(area_surface+ (figure->_figure + rows_height_index));
+    
+    cols_width_index&=~cols_width_index ;  
+    while(SSIZE > cols_width_index) 
+    {
+      int shape_cell_value = *(*(*(*(ttris_forms +figure->_form_type)+figure->_orientation)+rows_height_index)+cols_width_index); 
+      
+      if (0 != shape_cell_value) 
+      {
+         if (  TEREA_WIDTH  <= (figure->_shape  + cols_width_index))  continue ; 
+         if (  ~0           >= (figure->_shape  + cols_width_index))  continue ; 
+         if ( TEREA_HEIGHT  <= (figure->_figure + rows_height_index)) continue ; 
+         
+         //! Regirester form  in the matrix defined  by area_surface 
+         *(scan_shape_rowline+ (figure->_shape+cols_width_index)) =  figure->_form_type ;
+
+         printf("[+]") ; // , *(scan_shape_rowline +(figure->_shape+cols_width_index))) ; 
+      }else 
+        printf("[-]")  ; //" *(scan_shape_rowline+(figure->_shape+cols_width_index))) ; 
+
+      cols_width_index=-~cols_width_index ; 
+    }
+    
+    rows_height_index=-~rows_height_index ;
+    ttris_check_rows_line_completed(pgnd_zone) ;
+  }
+
+
+  //!TODO : make a representation  of area surface 
+  ttris_show_vmatrx(area_surface) ;  
+
+}
+
+
 static void ttris_record_form(struct  tformctl  *restrict figure , struct playground_area *restrict pgnd_zone) 
 {
 
-  int  form_item  = ~0 ; 
-  int *ttris_scan_line  ; 
+  int  form_item  = 0  ; 
+  int *ttris_scan_shape_form  ; 
  
-  while (  FSIZE > ++form_item) 
+
+  while (  FSIZE > form_item) 
   {
-     int shape=~0 ; 
-     ttris_scan_line =  *(area_surface+ (figure->_figure +form_item)) ; 
-
-     while(SSIZE > ++shape) 
+     printf("figure form -> %i  :  height  %i  \n" ,  figure->_figure, form_item) ; 
+     ttris_scan_shape_form =   *(area_surface+(figure->_figure +form_item)) ; //! get row of the shape   
+     
+     int shape=0;
+     //! On va parcourrir chaque cellule du figure   
+     while(SSIZE > shape) 
      {
-       if (ttris_forms[figure->_form_type][figure->_orientation][form_item][shape] != 0) 
+       //!On recupere la valeur du cellule de  note figure en cours  
+       int cell_value  =  *(*(*(*(ttris_forms +figure->_form_type)+figure->_orientation)+form_item)+shape); 
+       if (cell_value != 0) 
        {
-         if(figure->_shape+shape >= TEREA_WIDTH  || 
-            figure->_shape+shape <0 ) continue ; 
-
+         //printf("shape value  %i   + shape  %i  =   %i " , figure->_shape ,  shape ,  figure->_shape+shape) ;  
+         if(figure->_shape+shape >= TEREA_WIDTH )  continue ;  
+         if(figure->_shape+shape <0 ) continue ; 
          if(figure->_figure + form_item >= TEREA_HEIGHT) continue ; 
-         
-         *(ttris_scan_line+(figure->_shape+shape)) = figure->_form_type ;  
         
-        //printf("[%i]" , *(ttris_scan_line+(figure->_shape+shape)))  ; 
-       }//else 
-         //printf("[x]"); 
+         /*! Register  form shape using  form_type aka the id of form type*/
+         *(ttris_scan_shape_form+ (figure->_shape+shape))   = figure->_form_type ; 
+       }else 
+        printf("[0]") ; 
       
+       shape =-~shape; 
      }
-      ttris_check_rows_line_completed(pgnd_zone) ; 
+     form_item=-~form_item  ; 
+     ttris_check_rows_line_completed(pgnd_zone) ;   
   }
 
 }
@@ -318,7 +371,7 @@ static void ttris_check_rows_line_completed(struct playground_area * restrict  p
        int *mtrx_val= (*(area_surface+line)+col) ; 
        if (~0 == *mtrx_val) 
        {
-         rows_completed^=1 ; 
+         rows_completed = 0; 
          break;  
        }
      } 
@@ -326,7 +379,7 @@ static void ttris_check_rows_line_completed(struct playground_area * restrict  p
      if(1 == rows_completed)
      { 
        ttris_dbg_prt(100,1, "completed! at row  %i\n" , line+3);
-       ttris_move_all_blocks_above_to_downward(line , pgnd_zone) ; 
+       ttris_move_all_blocks_above_to_downward(line , pgnd_zone) ;
        continue ; 
        
      }
@@ -418,6 +471,7 @@ static int  ttris_figure_is_in_area(struct tformctl * restrict figure)
   return 0 ; 
 }
 
+//static void  ttris_collision_behavior  
 static void ttris_dectect_collision_between_object( struct  playground_area  * restrict  pgnd ,  
                                                     struct  tformctl * restrict current_form,  
                                                     struct  tformctl * restrict  prevs_form) 
@@ -440,4 +494,30 @@ void ttris_dbg_prt(int coordx , int coordy ,  const char * fmt , ...)
   vprintf(fmt, ap) ;
   
   va_end(ap); 
+} 
+
+
+static  void ttris_show_vmatrx(int (*vmat_area_surface)[TEREA_WIDTH]) 
+{
+  
+  int y=TEREA_HEIGHT ,x=0;  
+
+  int dim_h = TEREA_HEIGHT;  
+  tcmdexec_g(_cursors[cr_address]  ,(TEREA_WIDTH<<1)+50, dim_h) ; 
+  
+  printf("Vmat: Degugging "); 
+  while (  0 < y ) 
+  { 
+     int *line =  *(area_surface + y) ; 
+     tcmdexec_g(_cursors[cr_address] ,(TEREA_WIDTH <<1)+50 , dim_h--) ; 
+     x = (x&~(x)) |TEREA_WIDTH; 
+     while ( 0 < x) 
+     { 
+       printf("[%c]", (~0 ==  *(line+x))? 0x20: '+') ;  
+       x+=~(x^x) ;  
+     }
+ 
+     y+=~(y^y) ; 
+     
+  }
 }
